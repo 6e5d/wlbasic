@@ -1,3 +1,6 @@
+#ifndef _WLBASIC_WLBASICH
+#define _WLBASIC_WLBASICH
+
 #include <wayland-client.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -7,14 +10,18 @@ typedef struct {
 	struct wl_registry* registry;
 	struct wl_compositor* compositor;
 	struct wl_surface* surface;
+	struct wl_seat* seat;
+	struct wl_pointer *pointer;
 	struct xdg_wm_base* shell;
 	struct xdg_surface* shell_surface;
 	struct xdg_toplevel* toplevel;
 	bool quit;
 	bool resize;
-	int32_t width;
-	int32_t height;
+	uint32_t width;
+	uint32_t height;
 } Wlbasic;
 
 Wlbasic* wlbasic_init(void);
-void wlbasic_deinit(Wlbasic* wlbasic);
+void wlbasic_destroy(Wlbasic* wlbasic);
+
+#endif
