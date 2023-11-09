@@ -29,8 +29,7 @@ static const struct xdg_toplevel_listener toplevel_listener = {
 	.close = handle_toplevel_close
 };
 
-Wlbasic* wlbasic_init(void) {
-	Wlbasic* wl = calloc(1, sizeof(Wlbasic));
+void wlbasic_init(Wlbasic* wl) {
 	assert(wl->display = wl_display_connect(NULL));
 	assert(wl->registry = wl_display_get_registry(wl->display));
 	wl_registry_add_listener(wl->registry, &listener, wl);
@@ -49,10 +48,9 @@ Wlbasic* wlbasic_init(void) {
 	wl_surface_commit(wl->surface);
 	wl->width = 900;
 	wl->height = 600;
-	return wl;
 }
 
-void wlbasic_destroy(Wlbasic* wlbasic) {
+void wlbasic_deinit(Wlbasic* wlbasic) {
 	wl_pointer_destroy(wlbasic->pointer);
 	xdg_toplevel_destroy(wlbasic->toplevel);
 	xdg_surface_destroy(wlbasic->shell_surface);
@@ -62,5 +60,4 @@ void wlbasic_destroy(Wlbasic* wlbasic) {
 	wl_seat_destroy(wlbasic->seat);
 	wl_registry_destroy(wlbasic->registry);
 	wl_display_disconnect(wlbasic->display);
-	free(wlbasic);
 }

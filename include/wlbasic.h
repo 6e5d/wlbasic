@@ -21,7 +21,7 @@ typedef struct {
 	uint32_t height;
 } Wlbasic;
 
-Wlbasic* wlbasic_init(void);
-void wlbasic_destroy(Wlbasic* wlbasic);
+void wlbasic_init(Wlbasic* wl);
+void wlbasic_deinit(Wlbasic* wl);
 
 #endif
