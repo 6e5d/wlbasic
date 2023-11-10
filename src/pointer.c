@@ -27,10 +27,6 @@ void wl_pointer_motion(
 	wl_fixed_t surface_x,
 	wl_fixed_t surface_y
 ) {
-	printf("%lf %lf\n",
-		wl_fixed_to_double(surface_x),
-		wl_fixed_to_double(surface_y)
-	);
 }
 
 void wl_pointer_button(
@@ -41,8 +37,6 @@ void wl_pointer_button(
 	uint32_t button,
 	uint32_t state
 ) {
-	// Wlbasic *wl = data;
-	printf("%u %u %u %u\n", serial, time, button, state);
 }
 
 void wl_pointer_frame(

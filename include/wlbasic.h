@@ -31,6 +31,7 @@ typedef struct {
 	bool resize;
 	uint32_t width;
 	uint32_t height;
+	void* next; // user data
 } Wlbasic;
 
 void wlbasic_config_default(WlbasicConfig* conf);
