@@ -1,3 +1,6 @@
+#include <wayland-client.h>
+#include <stdint.h>
+
 void wl_seat_capabilities(
 	void *data,
 	struct wl_seat *wl_seat,

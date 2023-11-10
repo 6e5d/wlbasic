@@ -7,10 +7,8 @@
 #include "../include/wlbasic.h"
 #include "../include/registry.h"
 #include "../include/xdg.h"
-
-static const struct wl_registry_listener listener = {
-	.global = handle_registry
-};
+#include "../include/seat.h"
+#include "../include/pointer.h"
 
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
@@ -20,27 +18,42 @@ static void shell_surface_configure(
 	wlbasic->resize = true;
 }
 
-static const struct xdg_surface_listener shell_surface_listener = {
-	.configure = shell_surface_configure
-};
+void wlbasic_config_default(WlbasicConfig* conf) {
+	conf->shell_surface_listener.configure = shell_surface_configure;
+	conf->listener.global = handle_registry;
+	conf->toplevel_listener.configure = handle_toplevel_configure;
+	conf->toplevel_listener.close = handle_toplevel_close;
 
-static const struct xdg_toplevel_listener toplevel_listener = {
-	.configure = handle_toplevel_configure,
-	.close = handle_toplevel_close
-};
+	conf->shell_listener.ping = handle_shell_ping;
+	conf->wl_seat_listener.capabilities = wl_seat_capabilities;
+	conf->wl_seat_listener.name = wl_seat_name;
+
+	conf->wl_pointer_listener = (struct wl_pointer_listener) {
+		.enter = wl_pointer_enter,
+		.leave = wl_pointer_leave,
+		.motion = wl_pointer_motion,
+		.button = wl_pointer_button,
+		.axis = wl_pointer_axis,
+		.frame = wl_pointer_frame,
+		.axis_source = wl_pointer_axis_source,
+		.axis_stop = wl_pointer_axis_stop,
+		.axis_discrete = wl_pointer_axis_discrete,
+	};
+}
 
 void wlbasic_init(Wlbasic* wl) {
 	assert((wl->display = wl_display_connect(NULL)));
 	assert((wl->registry = wl_display_get_registry(wl->display)));
-	wl_registry_add_listener(wl->registry, &listener, wl);
+	wl_registry_add_listener(wl->registry, &wl->conf.listener, wl);
 	wl_display_roundtrip(wl->display);
 	assert((wl->surface = wl_compositor_create_surface(wl->compositor)));
 	assert((wl->shell_surface =
 		xdg_wm_base_get_xdg_surface(wl->shell, wl->surface)));
 	xdg_surface_add_listener(
-		wl->shell_surface, &shell_surface_listener, wl);
+		wl->shell_surface, &wl->conf.shell_surface_listener, wl);
 	assert((wl->toplevel = xdg_surface_get_toplevel(wl->shell_surface)));
-	xdg_toplevel_add_listener(wl->toplevel, &toplevel_listener, wl);
+	xdg_toplevel_add_listener(
+		wl->toplevel, &wl->conf.toplevel_listener, wl);
 	xdg_toplevel_set_title(wl->toplevel, "wlbasic");
 	xdg_toplevel_set_app_id(wl->toplevel, "wlbasic");
 	wl_surface_commit(wl->surface);
