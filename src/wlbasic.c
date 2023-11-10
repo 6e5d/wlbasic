@@ -30,16 +30,16 @@ static const struct xdg_toplevel_listener toplevel_listener = {
 };
 
 void wlbasic_init(Wlbasic* wl) {
-	assert(wl->display = wl_display_connect(NULL));
-	assert(wl->registry = wl_display_get_registry(wl->display));
+	assert((wl->display = wl_display_connect(NULL)));
+	assert((wl->registry = wl_display_get_registry(wl->display)));
 	wl_registry_add_listener(wl->registry, &listener, wl);
 	wl_display_roundtrip(wl->display);
-	assert(wl->surface = wl_compositor_create_surface(wl->compositor));
-	assert(wl->shell_surface =
-		xdg_wm_base_get_xdg_surface(wl->shell, wl->surface));
+	assert((wl->surface = wl_compositor_create_surface(wl->compositor)));
+	assert((wl->shell_surface =
+		xdg_wm_base_get_xdg_surface(wl->shell, wl->surface)));
 	xdg_surface_add_listener(
 		wl->shell_surface, &shell_surface_listener, wl);
-	assert(wl->toplevel = xdg_surface_get_toplevel(wl->shell_surface));
+	assert((wl->toplevel = xdg_surface_get_toplevel(wl->shell_surface)));
 	xdg_toplevel_add_listener(wl->toplevel, &toplevel_listener, wl);
 	xdg_toplevel_set_title(wl->toplevel, "wlbasic");
 	xdg_toplevel_set_app_id(wl->toplevel, "wlbasic");

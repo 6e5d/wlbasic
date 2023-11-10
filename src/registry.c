@@ -33,19 +33,19 @@ void handle_registry(
 ) {
 	Wlbasic* wlbasic = data;
 	if (strcmp(interface, wl_compositor_interface.name) == 0) {
-		assert(wlbasic->compositor = wl_registry_bind(
+		assert((wlbasic->compositor = wl_registry_bind(
 			registry,
 			name,
 			&wl_compositor_interface,
 			1
-		));
+		)));
 	} else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
-		assert(wlbasic->shell = wl_registry_bind(
+		assert((wlbasic->shell = wl_registry_bind(
 			registry,
 			name,
 			&xdg_wm_base_interface,
 			1
-		));
+		)));
 		xdg_wm_base_add_listener(wlbasic->shell, &shell_listener, NULL);
 	} else if (strcmp(interface, wl_seat_interface.name) == 0) {
 		wlbasic->seat = wl_registry_bind(
