@@ -12,8 +12,9 @@ typedef struct {
 	struct xdg_surface_listener shell_surface_listener;
 	struct xdg_toplevel_listener toplevel_listener;
 	struct xdg_wm_base_listener shell_listener;
-	struct wl_seat_listener wl_seat_listener;
-	struct wl_pointer_listener wl_pointer_listener;
+	struct wl_seat_listener seat_listener;
+	struct wl_pointer_listener pointer_listener;
+	struct wl_keyboard_listener keyboard_listener;
 } WlbasicConfig;
 
 typedef struct {
@@ -24,6 +25,10 @@ typedef struct {
 	struct wl_surface* surface;
 	struct wl_seat* seat;
 	struct wl_pointer *pointer;
+	struct wl_keyboard *keyboard;
+	struct xkb_state* xkb_state;
+	struct xkb_keymap* xkb_keymap;
+	struct xkb_context* xkb_context;
 	struct xdg_wm_base* shell;
 	struct xdg_surface* shell_surface;
 	struct xdg_toplevel* toplevel;

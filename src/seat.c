@@ -15,12 +15,22 @@ void wl_seat_capabilities(
 		wl->pointer = wl_seat_get_pointer(wl->seat);
 		wl_pointer_add_listener(
 			wl->pointer,
-			&wl->conf.wl_pointer_listener,
+			&wl->conf.pointer_listener,
 			wl
 		);
 	} else if (!have_pointer && wl->pointer != NULL) {
 		wl_pointer_release(wl->pointer);
 		wl->pointer = NULL;
+	}
+
+	bool have_keyboard = capabilities & WL_SEAT_CAPABILITY_KEYBOARD;
+	if (have_keyboard && wl->keyboard == NULL) {
+		wl->keyboard = wl_seat_get_keyboard(wl->seat);
+		wl_keyboard_add_listener(wl->keyboard,
+			&wl->conf.keyboard_listener, wl);
+	} else if (!have_keyboard && wl->keyboard != NULL) {
+		wl_keyboard_release(wl->keyboard);
+		wl->keyboard = NULL;
 	}
 }
 

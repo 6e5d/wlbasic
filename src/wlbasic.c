@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <wayland-client.h>
+#include <xkbcommon/xkbcommon.h>
 #include "../include/xdg-shell-client-header.h"
 
 #include "../include/wlbasic.h"
@@ -9,6 +10,7 @@
 #include "../include/xdg.h"
 #include "../include/seat.h"
 #include "../include/pointer.h"
+#include "../include/keyboard.h"
 
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
@@ -25,10 +27,10 @@ void wlbasic_config_default(WlbasicConfig* conf) {
 	conf->toplevel_listener.close = handle_toplevel_close;
 
 	conf->shell_listener.ping = handle_shell_ping;
-	conf->wl_seat_listener.capabilities = wl_seat_capabilities;
-	conf->wl_seat_listener.name = wl_seat_name;
+	conf->seat_listener.capabilities = wl_seat_capabilities;
+	conf->seat_listener.name = wl_seat_name;
 
-	conf->wl_pointer_listener = (struct wl_pointer_listener) {
+	conf->pointer_listener = (struct wl_pointer_listener) {
 		.enter = wl_pointer_enter,
 		.leave = wl_pointer_leave,
 		.motion = wl_pointer_motion,
@@ -38,6 +40,14 @@ void wlbasic_config_default(WlbasicConfig* conf) {
 		.axis_source = wl_pointer_axis_source,
 		.axis_stop = wl_pointer_axis_stop,
 		.axis_discrete = wl_pointer_axis_discrete,
+	};
+	conf->keyboard_listener = (struct wl_keyboard_listener) {
+		.keymap = wl_keyboard_keymap,
+		.enter = wl_keyboard_enter,
+		.leave = wl_keyboard_leave,
+		.key = wl_keyboard_key,
+		.modifiers = wl_keyboard_modifiers,
+		.repeat_info = wl_keyboard_repeat_info,
 	};
 }
 
@@ -61,6 +71,7 @@ void wlbasic_init(Wlbasic* wl) {
 	wl_surface_commit(wl->surface);
 	wl->width = 900;
 	wl->height = 600;
+	wl->xkb_context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
 }
 
 void wlbasic_deinit(Wlbasic* wlbasic) {

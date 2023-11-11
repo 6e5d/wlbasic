@@ -41,6 +41,6 @@ void handle_registry(
 	} else if (strcmp(interface, wl_seat_interface.name) == 0) {
 		wl->seat = wl_registry_bind(
 			registry, name, &wl_seat_interface, 7);
-		wl_seat_add_listener(wl->seat, &wl->conf.wl_seat_listener, wl);
+		wl_seat_add_listener(wl->seat, &wl->conf.seat_listener, wl);
 	}
 }
