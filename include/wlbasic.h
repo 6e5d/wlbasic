@@ -32,10 +32,6 @@ typedef struct {
 	struct xdg_wm_base* shell;
 	struct xdg_surface* shell_surface;
 	struct xdg_toplevel* toplevel;
-	bool quit;
-	bool resize;
-	uint32_t width;
-	uint32_t height;
 	void* next; // user data
 } Wlbasic;
 

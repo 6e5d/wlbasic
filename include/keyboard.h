@@ -1,22 +1,6 @@
 #include <wayland-client.h>
 #include <stdint.h>
 
-static char WLBASIC_CHARMAP[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\r', 0,
-	'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, ' ', 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-};
-
 void wl_keyboard_keymap(void *data, struct wl_keyboard *wl_keyboard,
 	uint32_t format, int32_t fd, uint32_t size);
 void wl_keyboard_key(void *data, struct wl_keyboard *wl_keyboard,

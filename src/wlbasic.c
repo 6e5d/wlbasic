@@ -17,7 +17,6 @@ static void shell_surface_configure(
 ) {
 	Wlbasic* wlbasic = data;
 	xdg_surface_ack_configure(surface, serial);
-	wlbasic->resize = true;
 }
 
 void wlbasic_config_default(WlbasicConfig* conf) {
@@ -69,8 +68,6 @@ void wlbasic_init(Wlbasic* wl) {
 	wl_surface_commit(wl->surface);
 	wl_display_roundtrip(wl->display);
 	wl_surface_commit(wl->surface);
-	wl->width = 900;
-	wl->height = 600;
 	wl->xkb_context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
 }
 

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <wayland-client.h>
 
 #include "../include/wlbasic.h"
@@ -39,5 +38,5 @@ void wl_seat_name(
 	struct wl_seat *wl_seat,
 	const char *name
 ) {
-	printf("seat name: %s\n", name);
+	// printf("seat name: %s\n", name);
 }
