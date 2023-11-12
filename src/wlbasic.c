@@ -15,7 +15,6 @@
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
 ) {
-	Wlbasic* wlbasic = data;
 	xdg_surface_ack_configure(surface, serial);
 }
 

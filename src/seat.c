@@ -2,6 +2,7 @@
 
 #include "../include/wlbasic.h"
 #include "../include/pointer.h"
+#include "../include/seat.h"
 
 void wl_seat_capabilities(
 	void *data,

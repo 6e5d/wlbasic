@@ -6,6 +6,7 @@
 #include <xkbcommon/xkbcommon.h>
 
 #include "../include/wlbasic.h"
+#include "../include/keyboard.h"
 
 void wl_keyboard_keymap(void *data, struct wl_keyboard *wl_keyboard,
 	uint32_t format, int32_t fd, uint32_t size) {}

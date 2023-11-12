@@ -1,3 +1,2 @@
-wayland-scanner
+libwayland-bin
 libwayland-dev
-libxkbcommon-dev

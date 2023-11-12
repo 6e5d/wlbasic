@@ -1,5 +1,5 @@
-#ifndef _WLBASIC_WLBASICH
-#define _WLBASIC_WLBASICH
+#ifndef INCLUDEGUARD_WLBASIC_WLBASICH
+#define INCLUDEGUARD_WLBASIC_WLBASICH
 
 #include <wayland-client.h>
 #include <stdint.h>
