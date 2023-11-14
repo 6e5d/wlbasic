@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <wayland-client.h>
-#include <xkbcommon/xkbcommon.h>
 #include "../include/xdg-shell-client-header.h"
 
 #include "../include/wlbasic.h"
@@ -67,15 +66,15 @@ void wlbasic_init(Wlbasic* wl) {
 	wl_surface_commit(wl->surface);
 	wl_display_roundtrip(wl->display);
 	wl_surface_commit(wl->surface);
-	wl->xkb_context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
 }
 
 void wlbasic_deinit(Wlbasic* wlbasic) {
-	wl_pointer_destroy(wlbasic->pointer);
 	xdg_toplevel_destroy(wlbasic->toplevel);
 	xdg_surface_destroy(wlbasic->shell_surface);
-	wl_surface_destroy(wlbasic->surface);
 	xdg_wm_base_destroy(wlbasic->shell);
+	wl_pointer_destroy(wlbasic->pointer);
+	wl_keyboard_destroy(wlbasic->keyboard);
+	wl_surface_destroy(wlbasic->surface);
 	wl_compositor_destroy(wlbasic->compositor);
 	wl_seat_destroy(wlbasic->seat);
 	wl_registry_destroy(wlbasic->registry);

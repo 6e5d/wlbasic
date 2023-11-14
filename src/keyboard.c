@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <wayland-client.h>
-#include <xkbcommon/xkbcommon.h>
 
 #include "../include/wlbasic.h"
 #include "../include/keyboard.h"

@@ -26,9 +26,6 @@ typedef struct {
 	struct wl_seat* seat;
 	struct wl_pointer *pointer;
 	struct wl_keyboard *keyboard;
-	struct xkb_state* xkb_state;
-	struct xkb_keymap* xkb_keymap;
-	struct xkb_context* xkb_context;
 	struct xdg_wm_base* shell;
 	struct xdg_surface* shell_surface;
 	struct xdg_toplevel* toplevel;
