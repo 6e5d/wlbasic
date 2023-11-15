@@ -49,7 +49,6 @@ void handle_registry(
 			registry, name, &zwp_tablet_manager_v2_interface, 1);
 	}
 	if (wl->tabseat == NULL && wl->tabman != NULL && wl->seat != NULL) {
-		// printf("configure tablet\n");
 		wl->tabseat = zwp_tablet_manager_v2_get_tablet_seat(
 			wl->tabman, wl->seat);
 		zwp_tablet_seat_v2_add_listener(
@@ -58,10 +57,4 @@ void handle_registry(
 			wl
 		);
 	}
-	// } else if (strcmp(interface, tablet_manager_v2.name)) {
-	// 	wl->tabman = wl_registry_bind(
-	// 		registry, name, &wl_seat_interface, 7);
-	// 	struct zwp_tablet_seat_v2* tablet_seat =
-	// 		zwp_tablet_manager_v2_get_tablet_seat(&tman, wl->seat);
-	// }
 }

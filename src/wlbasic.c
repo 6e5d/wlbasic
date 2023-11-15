@@ -103,6 +103,9 @@ void wlbasic_init(Wlbasic* wl) {
 }
 
 void wlbasic_deinit(Wlbasic* wlbasic) {
+	zwp_tablet_v2_destroy(wlbasic->tablet);
+	zwp_tablet_manager_v2_destroy(wlbasic->tabman);
+	zwp_tablet_seat_v2_destroy(wlbasic->tabseat);
 	xdg_toplevel_destroy(wlbasic->toplevel);
 	xdg_surface_destroy(wlbasic->shell_surface);
 	xdg_wm_base_destroy(wlbasic->shell);
