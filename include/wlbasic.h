@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #include "../include/xdg-shell-client-header.h"
+#include "../include/tablet-unstable-v2-client-header.h"
 
 typedef struct {
 	struct wl_registry_listener listener;
@@ -15,6 +16,9 @@ typedef struct {
 	struct wl_seat_listener seat_listener;
 	struct wl_pointer_listener pointer_listener;
 	struct wl_keyboard_listener keyboard_listener;
+	struct zwp_tablet_seat_v2_listener tabseat_listener;
+	struct zwp_tablet_v2_listener tablet_listener;
+	struct zwp_tablet_tool_v2_listener tabtool_listener;
 } WlbasicConfig;
 
 typedef struct {
@@ -29,6 +33,10 @@ typedef struct {
 	struct xdg_wm_base* shell;
 	struct xdg_surface* shell_surface;
 	struct xdg_toplevel* toplevel;
+	struct zwp_tablet_manager_v2* tabman;
+	struct zwp_tablet_seat_v2* tabseat;
+	struct zwp_tablet_v2* tablet;
+	struct zwp_tablet_tool_v2* tabtool;
 	void* next; // user data
 } Wlbasic;
 

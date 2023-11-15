@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <assert.h>
 #include <wayland-client.h>
 #include <string.h>
@@ -6,6 +7,7 @@
 #include "../include/registry.h"
 #include "../include/wlbasic.h"
 #include "../include/seat.h"
+#include "../include/tablet-unstable-v2-client-header.h"
 
 void handle_shell_ping(
 	void* data,
@@ -42,5 +44,24 @@ void handle_registry(
 		wl->seat = wl_registry_bind(
 			registry, name, &wl_seat_interface, 7);
 		wl_seat_add_listener(wl->seat, &wl->conf.seat_listener, wl);
+	} else if (!strcmp(interface, "zwp_tablet_manager_v2")) {
+		wl->tabman = wl_registry_bind(
+			registry, name, &zwp_tablet_manager_v2_interface, 1);
 	}
+	if (wl->tabseat == NULL && wl->tabman != NULL && wl->seat != NULL) {
+		// printf("configure tablet\n");
+		wl->tabseat = zwp_tablet_manager_v2_get_tablet_seat(
+			wl->tabman, wl->seat);
+		zwp_tablet_seat_v2_add_listener(
+			wl->tabseat,
+			&wl->conf.tabseat_listener,
+			wl
+		);
+	}
+	// } else if (strcmp(interface, tablet_manager_v2.name)) {
+	// 	wl->tabman = wl_registry_bind(
+	// 		registry, name, &wl_seat_interface, 7);
+	// 	struct zwp_tablet_seat_v2* tablet_seat =
+	// 		zwp_tablet_manager_v2_get_tablet_seat(&tman, wl->seat);
+	// }
 }

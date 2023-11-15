@@ -1,2 +1,3 @@
 xdg-shell
+tablet-unstable-v2
 ^target/

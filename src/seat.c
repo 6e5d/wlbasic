@@ -38,6 +38,4 @@ void wl_seat_name(
 	void *data,
 	struct wl_seat *wl_seat,
 	const char *name
-) {
-	// printf("seat name: %s\n", name);
-}
+) {}

@@ -2,14 +2,15 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <wayland-client.h>
-#include "../include/xdg-shell-client-header.h"
 
 #include "../include/wlbasic.h"
 #include "../include/registry.h"
-#include "../include/xdg.h"
 #include "../include/seat.h"
 #include "../include/pointer.h"
 #include "../include/keyboard.h"
+#include "../include/tablet.h"
+#include "../include/xdg.h"
+#include "../include/xdg-shell-client-header.h"
 
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
@@ -45,6 +46,39 @@ void wlbasic_config_default(WlbasicConfig* conf) {
 		.key = wl_keyboard_key,
 		.modifiers = wl_keyboard_modifiers,
 		.repeat_info = wl_keyboard_repeat_info,
+	};
+	conf->tabseat_listener = (struct zwp_tablet_seat_v2_listener) {
+		.tablet_added = tablet_added,
+		.tool_added = tool_added,
+		.pad_added = pad_added,
+	};
+	conf->tablet_listener = (struct zwp_tablet_v2_listener) {
+		.name = tablet_name,
+		.id = tablet_id,
+		.path = tablet_path,
+		.done = tablet_done,
+		.removed = tablet_removed,
+	};
+	conf->tabtool_listener = (struct zwp_tablet_tool_v2_listener) {
+		.type = tabtool_type,
+		.hardware_serial = tabtool_hardware_serial,
+		.hardware_id_wacom = tabtool_hardware_id_wacom,
+		.capability = tabtool_capability,
+		.done = tabtool_done,
+		.removed = tabtool_removed,
+		.proximity_in = tabtool_proximity_in,
+		.proximity_out = tabtool_proximity_out,
+		.down = tabtool_down,
+		.up = tabtool_up,
+		.motion = tabtool_motion,
+		.pressure = tabtool_pressure,
+		.distance = tabtool_distance,
+		.tilt = tabtool_tilt,
+		.rotation = tabtool_rotation,
+		.slider = tabtool_slider,
+		.wheel = tabtool_wheel,
+		.button = tabtool_button,
+		.frame = tabtool_frame,
 	};
 }
 
