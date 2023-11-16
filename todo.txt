@@ -1,0 +1,6 @@
+xdg decoration:
+
+currently wlbasic clients do not have decoration on sway floating mode.
+
+i learnt that wayland client needs to use xdg decoration protocol
+if they want to use server decoration. okay
