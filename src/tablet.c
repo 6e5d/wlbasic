@@ -4,9 +4,7 @@
 #include "../include/tablet.h"
 
 void tablet_name(
-	void *data, struct zwp_tablet_v2 *zwp_tablet_v2, const char *name) {
-	printf("NAME: %s\n", name);
-}
+	void *data, struct zwp_tablet_v2 *zwp_tablet_v2, const char *name) {}
 void tablet_id(void* data, struct zwp_tablet_v2 *zwp_tablet_v2,
 	uint32_t vid, uint32_t pid) {}
 void tablet_path(void* data, struct zwp_tablet_v2 *zwp_tablet_v2,
