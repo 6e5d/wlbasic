@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include <wayland-client.h>
 
-#include "../include/wlbasic.h"
+#include "../include/gesture.h"
+#include "../include/keyboard.h"
+#include "../include/pointer.h"
 #include "../include/registry.h"
 #include "../include/seat.h"
-#include "../include/pointer.h"
-#include "../include/keyboard.h"
 #include "../include/tablet.h"
+#include "../include/gesture.h"
+#include "../include/wlbasic.h"
 #include "../include/xdg.h"
 #include "../include/xdg-shell-client-header.h"
 
@@ -80,6 +82,12 @@ void wlbasic_config_default(WlbasicConfig* conf) {
 		.button = tabtool_button,
 		.frame = tabtool_frame,
 	};
+	conf->gepinch_listener = (struct zwp_pointer_gesture_pinch_v1_listener)
+	{
+		.begin = gepinch_begin,
+		.update = gepinch_update,
+		.end = gepinch_end,
+	};
 }
 
 void wlbasic_init(Wlbasic* wl) {
@@ -106,6 +114,7 @@ void wlbasic_deinit(Wlbasic* wlbasic) {
 	zwp_tablet_v2_destroy(wlbasic->tablet);
 	zwp_tablet_manager_v2_destroy(wlbasic->tabman);
 	zwp_tablet_seat_v2_destroy(wlbasic->tabseat);
+	zwp_pointer_gesture_pinch_v1_destroy(wlbasic->gepinch);
 	xdg_toplevel_destroy(wlbasic->toplevel);
 	xdg_surface_destroy(wlbasic->shell_surface);
 	xdg_wm_base_destroy(wlbasic->shell);

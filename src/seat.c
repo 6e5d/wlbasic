@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <wayland-client.h>
 
 #include "../include/wlbasic.h"
@@ -18,6 +19,12 @@ void wl_seat_capabilities(
 			&wl->conf.pointer_listener,
 			wl
 		);
+		assert(wl->gepinch == NULL && wl->gesture != NULL);
+		wl->gepinch = zwp_pointer_gestures_v1_get_pinch_gesture(
+			wl->gesture,
+			wl->pointer);
+		zwp_pointer_gesture_pinch_v1_add_listener(wl->gepinch,
+			&wl->conf.gepinch_listener, wl);
 	} else if (!have_pointer && wl->pointer != NULL) {
 		wl_pointer_release(wl->pointer);
 		wl->pointer = NULL;

@@ -8,23 +8,24 @@
 #include "../include/wlbasic.h"
 #include "../include/seat.h"
 #include "../include/tablet-unstable-v2-client-header.h"
+#include "../include/pointer-gestures-unstable-v1-client-header.h"
 
 void handle_shell_ping(
-	void* data,
-	struct xdg_wm_base* shell,
+	void *data,
+	struct xdg_wm_base *shell,
 	uint32_t serial
 ) {
 	xdg_wm_base_pong(shell, serial);
 }
 
 void handle_registry(
-	void* data,
-	struct wl_registry* registry,
+	void *data,
+	struct wl_registry *registry,
 	uint32_t name,
-	const char* interface,
+	const char *interface,
 	uint32_t version
 ) {
-	Wlbasic* wl = data;
+	Wlbasic *wl = data;
 	if (strcmp(interface, wl_compositor_interface.name) == 0) {
 		assert((wl->compositor = wl_registry_bind(
 			registry,
@@ -47,6 +48,9 @@ void handle_registry(
 	} else if (!strcmp(interface, "zwp_tablet_manager_v2")) {
 		wl->tabman = wl_registry_bind(
 			registry, name, &zwp_tablet_manager_v2_interface, 1);
+	} else if (!strcmp(interface, "zwp_pointer_gestures_v1")) {
+		wl->gesture = wl_registry_bind(
+			registry, name, &zwp_pointer_gestures_v1_interface, 1);
 	}
 	if (wl->tabseat == NULL && wl->tabman != NULL && wl->seat != NULL) {
 		wl->tabseat = zwp_tablet_manager_v2_get_tablet_seat(
