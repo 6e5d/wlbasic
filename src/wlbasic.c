@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <wayland-client.h>
 
-#include "../include/gesture.h"
 #include "../include/keyboard.h"
+#include "../include/output.h"
 #include "../include/pointer.h"
 #include "../include/registry.h"
 #include "../include/seat.h"
+#include "../include/surface.h"
 #include "../include/tablet.h"
 #include "../include/gesture.h"
 #include "../include/wlbasic.h"
@@ -17,14 +18,32 @@
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
 ) {
+	Wlbasic *wl = data;
 	xdg_surface_ack_configure(surface, serial);
+	wl_surface_set_buffer_scale(wl->surface, wl->scale);
+	wl_surface_commit(wl->surface);
 }
 
 void wlbasic_config_default(WlbasicConfig* conf) {
 	conf->shell_surface_listener.configure = shell_surface_configure;
 	conf->listener.global = handle_registry;
+	conf->output_listener = (struct wl_output_listener) {
+		.geometry = wlbasic_output_geometry,
+		.mode = wlbasic_output_mode,
+		.done = wlbasic_output_done,
+		.scale = wlbasic_output_scale,
+		.name = wlbasic_output_name,
+		.description = wlbasic_output_description,
+	};
+	conf->surface_listener = (struct wl_surface_listener) {
+		.enter = wlbasic_surface_enter,
+		.leave = wlbasic_surface_leave,
+		.preferred_buffer_scale = preferred_buffer_scale,
+		.preferred_buffer_transform = preferred_buffer_transform,
+	};
 	conf->toplevel_listener.configure = handle_toplevel_configure;
 	conf->toplevel_listener.close = handle_toplevel_close;
+	conf->topdeco_listener.configure = wlbasic_topdeco_configure;
 
 	conf->shell_listener.ping = handle_shell_ping;
 	conf->seat_listener.capabilities = wl_seat_capabilities;
@@ -90,12 +109,40 @@ void wlbasic_config_default(WlbasicConfig* conf) {
 	};
 }
 
+static void wlbasic_init2(Wlbasic* wl) {
+	if (wl->toplevel != NULL && wl->deco_manager != NULL) {
+		wl->topdeco = zxdg_decoration_manager_v1_get_toplevel_decoration(
+			wl->deco_manager, wl->toplevel);
+		zxdg_toplevel_decoration_v1_set_mode(wl->topdeco,
+			ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE);
+		zxdg_toplevel_decoration_v1_add_listener(wl->topdeco,
+			&wl->conf.topdeco_listener, wl);
+	}
+	if (wl->tabseat == NULL && wl->tabman != NULL && wl->seat != NULL) {
+		wl->tabseat = zwp_tablet_manager_v2_get_tablet_seat(
+			wl->tabman, wl->seat);
+		zwp_tablet_seat_v2_add_listener(
+			wl->tabseat,
+			&wl->conf.tabseat_listener,
+			wl
+		);
+	}
+	if (wl->pointer != NULL && wl->gepinch == NULL && wl->gesture != NULL) {
+		wl->gepinch = zwp_pointer_gestures_v1_get_pinch_gesture(
+			wl->gesture, wl->pointer);
+		zwp_pointer_gesture_pinch_v1_add_listener(wl->gepinch,
+			&wl->conf.gepinch_listener, wl);
+	}
+}
+
 void wlbasic_init(Wlbasic* wl) {
+	wl->scale = 1;
 	assert((wl->display = wl_display_connect(NULL)));
 	assert((wl->registry = wl_display_get_registry(wl->display)));
 	wl_registry_add_listener(wl->registry, &wl->conf.listener, wl);
 	wl_display_roundtrip(wl->display);
 	assert((wl->surface = wl_compositor_create_surface(wl->compositor)));
+	wl_surface_add_listener(wl->surface, &wl->conf.surface_listener, wl);
 	assert((wl->shell_surface =
 		xdg_wm_base_get_xdg_surface(wl->shell, wl->surface)));
 	xdg_surface_add_listener(
@@ -103,19 +150,26 @@ void wlbasic_init(Wlbasic* wl) {
 	assert((wl->toplevel = xdg_surface_get_toplevel(wl->shell_surface)));
 	xdg_toplevel_add_listener(
 		wl->toplevel, &wl->conf.toplevel_listener, wl);
-	xdg_toplevel_set_title(wl->toplevel, "wlbasic");
-	xdg_toplevel_set_app_id(wl->toplevel, "wlbasic");
 	wl_surface_commit(wl->surface);
 	wl_display_roundtrip(wl->display);
+	wlbasic_init2(wl);
 	wl_surface_commit(wl->surface);
 }
 
 void wlbasic_deinit(Wlbasic* wlbasic) {
 	zwp_tablet_v2_destroy(wlbasic->tablet);
 	zwp_tablet_manager_v2_destroy(wlbasic->tabman);
-	zwp_tablet_seat_v2_destroy(wlbasic->tabseat);
+	zxdg_decoration_manager_v1_destroy(wlbasic->deco_manager);
+	if (wlbasic->topdeco) {
+		zxdg_toplevel_decoration_v1_destroy(wlbasic->topdeco);
+	}
+	if (wlbasic->tabseat) {
+		zwp_tablet_seat_v2_destroy(wlbasic->tabseat);
+	}
 	zwp_pointer_gestures_v1_destroy(wlbasic->gesture);
-	zwp_pointer_gesture_pinch_v1_destroy(wlbasic->gepinch);
+	if (wlbasic->gepinch) {
+		zwp_pointer_gesture_pinch_v1_destroy(wlbasic->gepinch);
+	}
 	xdg_toplevel_destroy(wlbasic->toplevel);
 	xdg_surface_destroy(wlbasic->shell_surface);
 	xdg_wm_base_destroy(wlbasic->shell);
@@ -125,5 +179,6 @@ void wlbasic_deinit(Wlbasic* wlbasic) {
 	wl_compositor_destroy(wlbasic->compositor);
 	wl_seat_destroy(wlbasic->seat);
 	wl_registry_destroy(wlbasic->registry);
+	wl_output_destroy(wlbasic->output);
 	wl_display_disconnect(wlbasic->display);
 }

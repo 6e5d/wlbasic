@@ -9,3 +9,7 @@ void handle_toplevel_configure(
 );
 
 void handle_toplevel_close(void* data, struct xdg_toplevel* toplevel);
+
+void wlbasic_topdeco_configure(void *data,
+	struct zxdg_toplevel_decoration_v1 *zxdg_toplevel_decoration_v1,
+	uint32_t mode);

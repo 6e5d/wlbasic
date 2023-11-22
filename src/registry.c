@@ -9,6 +9,7 @@
 #include "../include/seat.h"
 #include "../include/tablet-unstable-v2-client-header.h"
 #include "../include/pointer-gestures-unstable-v1-client-header.h"
+#include "../include/xdg-decoration-unstable-v1-client-header.h"
 
 void handle_shell_ping(
 	void *data,
@@ -31,16 +32,17 @@ void handle_registry(
 			registry,
 			name,
 			&wl_compositor_interface,
-			1
+			3
 		)));
 	} else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
 		assert((wl->shell = wl_registry_bind(
 			registry,
 			name,
 			&xdg_wm_base_interface,
-			1
+			2
 		)));
-		xdg_wm_base_add_listener(wl->shell, &wl->conf.shell_listener, NULL);
+		xdg_wm_base_add_listener(
+			wl->shell, &wl->conf.shell_listener, NULL);
 	} else if (strcmp(interface, wl_seat_interface.name) == 0) {
 		wl->seat = wl_registry_bind(
 			registry, name, &wl_seat_interface, 7);
@@ -51,14 +53,12 @@ void handle_registry(
 	} else if (!strcmp(interface, "zwp_pointer_gestures_v1")) {
 		wl->gesture = wl_registry_bind(
 			registry, name, &zwp_pointer_gestures_v1_interface, 1);
-	}
-	if (wl->tabseat == NULL && wl->tabman != NULL && wl->seat != NULL) {
-		wl->tabseat = zwp_tablet_manager_v2_get_tablet_seat(
-			wl->tabman, wl->seat);
-		zwp_tablet_seat_v2_add_listener(
-			wl->tabseat,
-			&wl->conf.tabseat_listener,
-			wl
-		);
+	} else if (!strcmp(interface, "zxdg_decoration_manager_v1")) {
+		wl->deco_manager = wl_registry_bind(
+			registry, name, &zxdg_decoration_manager_v1_interface, 1);
+	} else if (!strcmp(interface, "wl_output")) {
+		wl->output = wl_registry_bind(
+			registry, name, &wl_output_interface, 4);
+		wl_output_add_listener(wl->output, &wl->conf.output_listener, wl);
 	}
 }
