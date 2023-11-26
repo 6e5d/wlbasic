@@ -157,18 +157,26 @@ void wlbasic_init(Wlbasic* wl) {
 }
 
 void wlbasic_deinit(Wlbasic* wlbasic) {
-	zwp_tablet_v2_destroy(wlbasic->tablet);
-	zwp_tablet_manager_v2_destroy(wlbasic->tabman);
-	zxdg_decoration_manager_v1_destroy(wlbasic->deco_manager);
-	if (wlbasic->topdeco) {
-		zxdg_toplevel_decoration_v1_destroy(wlbasic->topdeco);
+	if (wlbasic->tablet) {
+		zwp_tablet_v2_destroy(wlbasic->tablet);
 	}
 	if (wlbasic->tabseat) {
 		zwp_tablet_seat_v2_destroy(wlbasic->tabseat);
 	}
-	zwp_pointer_gestures_v1_destroy(wlbasic->gesture);
+	if (wlbasic->tabman) {
+		zwp_tablet_manager_v2_destroy(wlbasic->tabman);
+	}
+	if (wlbasic->deco_manager) {
+		zxdg_decoration_manager_v1_destroy(wlbasic->deco_manager);
+	}
+	if (wlbasic->topdeco) {
+		zxdg_toplevel_decoration_v1_destroy(wlbasic->topdeco);
+	}
 	if (wlbasic->gepinch) {
 		zwp_pointer_gesture_pinch_v1_destroy(wlbasic->gepinch);
+	}
+	if (wlbasic->gesture) {
+		zwp_pointer_gestures_v1_destroy(wlbasic->gesture);
 	}
 	xdg_toplevel_destroy(wlbasic->toplevel);
 	xdg_surface_destroy(wlbasic->shell_surface);
