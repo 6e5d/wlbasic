@@ -1,3 +1,6 @@
+#ifndef INCLUDEGUARD_WLBASIC_KEYBOARDH
+#define INCLUDEGUARD_WLBASIC_KEYBOARDH
+
 #include <wayland-client.h>
 #include <stdint.h>
 
@@ -15,3 +18,5 @@ void wl_keyboard_modifiers(void *data, struct wl_keyboard *wl_keyboard,
 	uint32_t group);
 void wl_keyboard_repeat_info(void *data, struct wl_keyboard *wl_keyboard,
 	int32_t rate, int32_t delay);
+
+#endif

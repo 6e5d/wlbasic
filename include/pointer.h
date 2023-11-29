@@ -1,3 +1,6 @@
+#ifndef INCLUDEGUARD_WLBASIC_POINTERH
+#define INCLUDEGUARD_WLBASIC_POINTERH
+
 #include <wayland-client.h>
 
 void wl_pointer_enter(
@@ -64,3 +67,5 @@ void wl_pointer_axis_discrete(
 	uint32_t axis,
 	int32_t discrete
 );
+
+#endif

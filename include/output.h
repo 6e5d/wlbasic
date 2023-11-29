@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCLUDEGUARD_WLBASIC_OUTPUTH
+#define INCLUDEGUARD_WLBASIC_OUTPUTH
 
 #include <stdint.h>
 #include <wayland-client.h>
@@ -21,3 +22,4 @@ void wlbasic_output_scale(void *data, struct wl_output *wl_output, int32_t facto
 void wlbasic_output_name(void *data, struct wl_output *wl_output, const char *name);
 void wlbasic_output_description(void *data, struct wl_output *wl_output, const char *description);
 
+#endif

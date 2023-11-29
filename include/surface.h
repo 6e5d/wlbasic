@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCLUDEGUARD_WLBASIC_SURFACEH
+#define INCLUDEGUARD_WLBASIC_SURFACEH
 
 #include <wayland-client.h>
 
@@ -14,3 +15,5 @@ void preferred_buffer_scale(void *data,
 void preferred_buffer_transform(void *data,
 	struct wl_surface *wl_surface,
 	uint32_t transform);
+
+#endif

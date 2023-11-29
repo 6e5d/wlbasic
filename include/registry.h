@@ -1,3 +1,6 @@
+#ifndef INCLUDEGUARD_WLBASIC_REGISTRYH
+#define INCLUDEGUARD_WLBASIC_REGISTRYH
+
 #include <wayland-client.h>
 
 #include "../include/xdg-shell-client-header.h"
@@ -15,3 +18,5 @@ void handle_registry(
 	const char* interface,
 	uint32_t version
 );
+
+#endif
