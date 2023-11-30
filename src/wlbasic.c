@@ -1,24 +1,23 @@
 #include <wayland-client.h>
 
 #include "../include/wlbasic.h"
-#include "../include/xdg-shell-client-header.h"
+#include "../include/xdg-shell.external.h"
 
 static void handle_toplevel_configure(
 	void* data,
-	struct xdg_toplevel* toplevel,
-	int32_t width,
-	int32_t height,
-	struct wl_array* states
+	struct xdg_toplevel*,
+	int32_t, int32_t,
+	struct wl_array*
 ) {
 	Wlbasic *wl = data;
 	wl_surface_set_buffer_scale(wl->surface, 1);
 }
 
-static void handle_toplevel_close(void* data, struct xdg_toplevel* toplevel) {}
+static void handle_toplevel_close(void*, struct xdg_toplevel*) {}
 
-static void wlbasic_topdeco_configure(void *data,
-	struct zxdg_toplevel_decoration_v1 *zxdg_toplevel_decoration_v1,
-	uint32_t mode) {}
+static void wlbasic_topdeco_configure(void*,
+	struct zxdg_toplevel_decoration_v1*,
+	uint32_t) {}
 
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
@@ -29,20 +28,18 @@ static void shell_surface_configure(
 	wl_surface_commit(wl->surface);
 }
 
-static void handle_shell_ping(
-	void *data,
+static void handle_shell_ping(void*,
 	struct xdg_wm_base *shell,
 	uint32_t serial
 ) {
 	xdg_wm_base_pong(shell, serial);
 }
 
-static void handle_registry(
-	void *data,
+static void handle_registry(void *data,
 	struct wl_registry *registry,
 	uint32_t name,
 	const char *interface,
-	uint32_t version
+	uint32_t
 ) {
 	Wlbasic *wl = data;
 	if (strcmp(interface, wl_compositor_interface.name) == 0) {

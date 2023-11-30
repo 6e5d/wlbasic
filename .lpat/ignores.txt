@@ -1,3 +1,2 @@
--private-code\.c$
--client-header\.h$
+\.external\.
 ^target/

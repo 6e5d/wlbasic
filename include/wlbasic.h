@@ -3,10 +3,10 @@
 
 #include <wayland-client.h>
 
-#include "../include/tablet-unstable-v2-client-header.h"
-#include "../include/xdg-shell-client-header.h"
-#include "../include/xdg-decoration-unstable-v1-client-header.h"
-#include "../include/pointer-gestures-unstable-v1-client-header.h"
+#include "../include/tablet-unstable-v2.external.h"
+#include "../include/xdg-shell.external.h"
+#include "../include/xdg-decoration-unstable-v1.external.h"
+#include "../include/pointer-gestures-unstable-v1.external.h"
 
 typedef struct {
 	struct wl_registry_listener listener;

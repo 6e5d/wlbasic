@@ -4,7 +4,7 @@
 
 static void wl_seat_capabilities(
 	void *data,
-	struct wl_seat *wl_seat,
+	struct wl_seat*,
 	uint32_t capabilities
 ) {
 	Wlbasic *wl = data;
@@ -32,11 +32,7 @@ static void wl_seat_capabilities(
 	}
 }
 
-static void wl_seat_name(
-	void *data,
-	struct wl_seat *wl_seat,
-	const char *name
-) {}
+static void wl_seat_name(void*, struct wl_seat*, const char*) {}
 
 void wlbasic_seat_default(struct wl_seat_listener *listener) {
 	*listener = (struct wl_seat_listener) {

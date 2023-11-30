@@ -2,19 +2,12 @@
 
 #include "../include/wlbasic.h"
 
-static void wlbasic_surface_enter(void *data,
-	struct wl_surface *wl_surface,
-	struct wl_output *output) {}
-static void wlbasic_surface_leave(void *data,
-	struct wl_surface *wl_surface,
-	struct wl_output *output) {}
-static void preferred_buffer_scale(void *data,
-	struct wl_surface *wl_surface,
-	int32_t factor) {
-}
-static void preferred_buffer_transform(void *data,
-	struct wl_surface *wl_surface,
-	uint32_t transform) {}
+static void wlbasic_surface_enter(void*,
+	struct wl_surface*, struct wl_output*) {}
+static void wlbasic_surface_leave(void*,
+	struct wl_surface*, struct wl_output*) {}
+static void preferred_buffer_scale(void*, struct wl_surface*, int32_t) {}
+static void preferred_buffer_transform(void*, struct wl_surface*, uint32_t) {}
 
 void wlbasic_surface_default(struct wl_surface_listener *listener) {
 	*listener = (struct wl_surface_listener) {
