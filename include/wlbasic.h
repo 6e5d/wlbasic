@@ -1,9 +1,7 @@
-#ifndef INCLUDEGUARD_WLBASIC_WLBASICH
-#define INCLUDEGUARD_WLBASIC_WLBASICH
+#ifndef INCLUDEGUARD_WLBASIC
+#define INCLUDEGUARD_WLBASIC
 
 #include <wayland-client.h>
-#include <stdint.h>
-#include <stdbool.h>
 
 #include "../include/tablet-unstable-v2-client-header.h"
 #include "../include/xdg-shell-client-header.h"
@@ -55,5 +53,15 @@ typedef struct {
 void wlbasic_config_default(WlbasicConfig *conf);
 void wlbasic_init(Wlbasic *wl);
 void wlbasic_deinit(Wlbasic *wl);
+
+void wlbasic_seat_default(struct wl_seat_listener *listener);
+void wlbasic_surface_default(struct wl_surface_listener *listener);
+void wlbasic_output_default(struct wl_output_listener *listener);
+void wlbasic_keyboard_default(struct wl_keyboard_listener *listener);
+void wlbasic_pointer_default(struct wl_pointer_listener *listener);
+void wlbasic_tablet_default(struct zwp_tablet_v2_listener *listener);
+void wlbasic_tabseat_default(struct zwp_tablet_seat_v2_listener *listener);
+void wlbasic_tabtool_default(struct zwp_tablet_tool_v2_listener *listener);
+void wlbasic_gepinch_default(struct zwp_pointer_gesture_pinch_v1_listener *listener);
 
 #endif

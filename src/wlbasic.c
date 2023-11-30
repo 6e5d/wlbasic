@@ -1,19 +1,24 @@
-#include <assert.h>
-#include <stdbool.h>
-#include <stdlib.h>
 #include <wayland-client.h>
 
-#include "../include/keyboard.h"
-#include "../include/output.h"
-#include "../include/pointer.h"
-#include "../include/registry.h"
-#include "../include/seat.h"
-#include "../include/surface.h"
-#include "../include/tablet.h"
-#include "../include/gesture.h"
 #include "../include/wlbasic.h"
-#include "../include/xdg.h"
 #include "../include/xdg-shell-client-header.h"
+
+static void handle_toplevel_configure(
+	void* data,
+	struct xdg_toplevel* toplevel,
+	int32_t width,
+	int32_t height,
+	struct wl_array* states
+) {
+	Wlbasic *wl = data;
+	wl_surface_set_buffer_scale(wl->surface, 1);
+}
+
+static void handle_toplevel_close(void* data, struct xdg_toplevel* toplevel) {}
+
+static void wlbasic_topdeco_configure(void *data,
+	struct zxdg_toplevel_decoration_v1 *zxdg_toplevel_decoration_v1,
+	uint32_t mode) {}
 
 static void shell_surface_configure(
 	void* data, struct xdg_surface* surface, uint32_t serial
@@ -24,89 +29,75 @@ static void shell_surface_configure(
 	wl_surface_commit(wl->surface);
 }
 
+static void handle_shell_ping(
+	void *data,
+	struct xdg_wm_base *shell,
+	uint32_t serial
+) {
+	xdg_wm_base_pong(shell, serial);
+}
+
+static void handle_registry(
+	void *data,
+	struct wl_registry *registry,
+	uint32_t name,
+	const char *interface,
+	uint32_t version
+) {
+	Wlbasic *wl = data;
+	if (strcmp(interface, wl_compositor_interface.name) == 0) {
+		assert((wl->compositor = wl_registry_bind(
+			registry,
+			name,
+			&wl_compositor_interface,
+			3
+		)));
+	} else if (strcmp(interface, xdg_wm_base_interface.name) == 0) {
+		assert((wl->shell = wl_registry_bind(
+			registry,
+			name,
+			&xdg_wm_base_interface,
+			2
+		)));
+		xdg_wm_base_add_listener(
+			wl->shell, &wl->conf.shell_listener, NULL);
+	} else if (strcmp(interface, wl_seat_interface.name) == 0) {
+		wl->seat = wl_registry_bind(
+			registry, name, &wl_seat_interface, 7);
+		wl_seat_add_listener(wl->seat, &wl->conf.seat_listener, wl);
+	} else if (!strcmp(interface, "zwp_tablet_manager_v2")) {
+		wl->tabman = wl_registry_bind(
+			registry, name, &zwp_tablet_manager_v2_interface, 1);
+	} else if (!strcmp(interface, "zwp_pointer_gestures_v1")) {
+		wl->gesture = wl_registry_bind(
+			registry, name, &zwp_pointer_gestures_v1_interface, 1);
+	} else if (!strcmp(interface, "zxdg_decoration_manager_v1")) {
+		wl->deco_manager = wl_registry_bind(
+			registry, name, &zxdg_decoration_manager_v1_interface, 1);
+	} else if (!strcmp(interface, "wl_output")) {
+		wl->output = wl_registry_bind(
+			registry, name, &wl_output_interface, 4);
+		wl_output_add_listener(wl->output, &wl->conf.output_listener, wl);
+	}
+}
+
 void wlbasic_config_default(WlbasicConfig* conf) {
 	conf->shell_surface_listener.configure = shell_surface_configure;
 	conf->listener.global = handle_registry;
-	conf->output_listener = (struct wl_output_listener) {
-		.geometry = wlbasic_output_geometry,
-		.mode = wlbasic_output_mode,
-		.done = wlbasic_output_done,
-		.scale = wlbasic_output_scale,
-		.name = wlbasic_output_name,
-		.description = wlbasic_output_description,
-	};
-	conf->surface_listener = (struct wl_surface_listener) {
-		.enter = wlbasic_surface_enter,
-		.leave = wlbasic_surface_leave,
-		.preferred_buffer_scale = preferred_buffer_scale,
-		.preferred_buffer_transform = preferred_buffer_transform,
-	};
 	conf->toplevel_listener.configure = handle_toplevel_configure;
 	conf->toplevel_listener.close = handle_toplevel_close;
 	conf->topdeco_listener.configure = wlbasic_topdeco_configure;
-
 	conf->shell_listener.ping = handle_shell_ping;
-	conf->seat_listener.capabilities = wl_seat_capabilities;
-	conf->seat_listener.name = wl_seat_name;
 
-	conf->pointer_listener = (struct wl_pointer_listener) {
-		.enter = wl_pointer_enter,
-		.leave = wl_pointer_leave,
-		.motion = wl_pointer_motion,
-		.button = wl_pointer_button,
-		.axis = wl_pointer_axis,
-		.frame = wl_pointer_frame,
-		.axis_source = wl_pointer_axis_source,
-		.axis_stop = wl_pointer_axis_stop,
-		.axis_discrete = wl_pointer_axis_discrete,
-	};
-	conf->keyboard_listener = (struct wl_keyboard_listener) {
-		.keymap = wl_keyboard_keymap,
-		.enter = wl_keyboard_enter,
-		.leave = wl_keyboard_leave,
-		.key = wl_keyboard_key,
-		.modifiers = wl_keyboard_modifiers,
-		.repeat_info = wl_keyboard_repeat_info,
-	};
-	conf->tabseat_listener = (struct zwp_tablet_seat_v2_listener) {
-		.tablet_added = tablet_added,
-		.tool_added = tool_added,
-		.pad_added = pad_added,
-	};
-	conf->tablet_listener = (struct zwp_tablet_v2_listener) {
-		.name = tablet_name,
-		.id = tablet_id,
-		.path = tablet_path,
-		.done = tablet_done,
-		.removed = tablet_removed,
-	};
-	conf->tabtool_listener = (struct zwp_tablet_tool_v2_listener) {
-		.type = tabtool_type,
-		.hardware_serial = tabtool_hardware_serial,
-		.hardware_id_wacom = tabtool_hardware_id_wacom,
-		.capability = tabtool_capability,
-		.done = tabtool_done,
-		.removed = tabtool_removed,
-		.proximity_in = tabtool_proximity_in,
-		.proximity_out = tabtool_proximity_out,
-		.down = tabtool_down,
-		.up = tabtool_up,
-		.motion = tabtool_motion,
-		.pressure = tabtool_pressure,
-		.distance = tabtool_distance,
-		.tilt = tabtool_tilt,
-		.rotation = tabtool_rotation,
-		.slider = tabtool_slider,
-		.wheel = tabtool_wheel,
-		.button = tabtool_button,
-		.frame = tabtool_frame,
-	};
-	conf->gepinch_listener = (struct zwp_pointer_gesture_pinch_v1_listener)
-	{
-		.begin = gepinch_begin,
-		.update = gepinch_update,
-		.end = gepinch_end,
-	};
+	wlbasic_seat_default(&conf->seat_listener);
+	wlbasic_surface_default(&conf->surface_listener);
+	wlbasic_output_default(&conf->output_listener);
+	wlbasic_keyboard_default(&conf->keyboard_listener);
+	wlbasic_pointer_default(&conf->pointer_listener);
+	wlbasic_tablet_default(&conf->tablet_listener);
+	wlbasic_tabseat_default(&conf->tabseat_listener);
+	wlbasic_tabtool_default(&conf->tabtool_listener);
+	wlbasic_gepinch_default(&conf->gepinch_listener);
 }
 
 static void wlbasic_init2(Wlbasic* wl) {

@@ -1,11 +1,8 @@
-#include <assert.h>
 #include <wayland-client.h>
 
 #include "../include/wlbasic.h"
-#include "../include/pointer.h"
-#include "../include/seat.h"
 
-void wl_seat_capabilities(
+static void wl_seat_capabilities(
 	void *data,
 	struct wl_seat *wl_seat,
 	uint32_t capabilities
@@ -35,8 +32,15 @@ void wl_seat_capabilities(
 	}
 }
 
-void wl_seat_name(
+static void wl_seat_name(
 	void *data,
 	struct wl_seat *wl_seat,
 	const char *name
 ) {}
+
+void wlbasic_seat_default(struct wl_seat_listener *listener) {
+	*listener = (struct wl_seat_listener) {
+		.capabilities = wl_seat_capabilities,
+		.name = wl_seat_name,
+	};
+}
