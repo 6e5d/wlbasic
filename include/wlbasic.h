@@ -8,6 +8,9 @@
 #include "../include/xdg-decoration-unstable-v1.external.h"
 #include "../include/pointer-gestures-unstable-v1.external.h"
 
+#define Wlbasic(sym) Com_6e5dWlbasic##sym
+#define wlbasic(sym) com_6e5d_wlbasic_##sym
+
 typedef struct {
 	struct wl_registry_listener listener;
 	struct wl_output_listener output_listener;
@@ -23,10 +26,10 @@ typedef struct {
 	struct zwp_tablet_v2_listener tablet_listener;
 	struct zwp_tablet_tool_v2_listener tabtool_listener;
 	struct zwp_pointer_gesture_pinch_v1_listener gepinch_listener;
-} WlbasicConfig;
+} Wlbasic(Config);
 
 typedef struct {
-	WlbasicConfig conf;
+	Wlbasic(Config) conf;
 	struct wl_display *display;
 	struct wl_registry *registry;
 	struct wl_output *output;
@@ -48,20 +51,20 @@ typedef struct {
 	struct zwp_pointer_gesture_pinch_v1 *gepinch;
 	int32_t scale;
 	void *next; // user data
-} Wlbasic;
+} Wlbasic();
 
-void wlbasic_config_default(WlbasicConfig *conf);
-void wlbasic_init(Wlbasic *wl);
-void wlbasic_deinit(Wlbasic *wl);
+void wlbasic(config_default)(Wlbasic(Config) *conf);
+void wlbasic(init)(Wlbasic() *wl);
+void wlbasic(deinit)(Wlbasic() *wl);
 
-void wlbasic_seat_default(struct wl_seat_listener *listener);
-void wlbasic_surface_default(struct wl_surface_listener *listener);
-void wlbasic_output_default(struct wl_output_listener *listener);
-void wlbasic_keyboard_default(struct wl_keyboard_listener *listener);
-void wlbasic_pointer_default(struct wl_pointer_listener *listener);
-void wlbasic_tablet_default(struct zwp_tablet_v2_listener *listener);
-void wlbasic_tabseat_default(struct zwp_tablet_seat_v2_listener *listener);
-void wlbasic_tabtool_default(struct zwp_tablet_tool_v2_listener *listener);
-void wlbasic_gepinch_default(struct zwp_pointer_gesture_pinch_v1_listener *listener);
+void wlbasic(seat_default)(struct wl_seat_listener *listener);
+void wlbasic(surface_default)(struct wl_surface_listener *listener);
+void wlbasic(output_default)(struct wl_output_listener *listener);
+void wlbasic(keyboard_default)(struct wl_keyboard_listener *listener);
+void wlbasic(pointer_default)(struct wl_pointer_listener *listener);
+void wlbasic(tablet_default)(struct zwp_tablet_v2_listener *listener);
+void wlbasic(tabseat_default)(struct zwp_tablet_seat_v2_listener *listener);
+void wlbasic(tabtool_default)(struct zwp_tablet_tool_v2_listener *listener);
+void wlbasic(gepinch_default)(struct zwp_pointer_gesture_pinch_v1_listener *listener);
 
 #endif

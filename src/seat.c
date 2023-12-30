@@ -7,7 +7,7 @@ static void wl_seat_capabilities(
 	struct wl_seat*,
 	uint32_t capabilities
 ) {
-	Wlbasic *wl = data;
+	Wlbasic() *wl = data;
 	bool have_pointer = capabilities & WL_SEAT_CAPABILITY_POINTER;
 	if (have_pointer && wl->pointer == NULL) {
 		wl->pointer = wl_seat_get_pointer(wl->seat);
@@ -34,7 +34,7 @@ static void wl_seat_capabilities(
 
 static void wl_seat_name(void*, struct wl_seat*, const char*) {}
 
-void wlbasic_seat_default(struct wl_seat_listener *listener) {
+void wlbasic(seat_default)(struct wl_seat_listener *listener) {
 	*listener = (struct wl_seat_listener) {
 		.capabilities = wl_seat_capabilities,
 		.name = wl_seat_name,

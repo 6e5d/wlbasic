@@ -25,7 +25,7 @@ static void wl_pointer_axis_stop(void*, struct wl_pointer*,
 static void wl_pointer_axis_discrete(void*, struct wl_pointer*,
 	uint32_t, int32_t) {}
 
-void wlbasic_pointer_default(struct wl_pointer_listener *listener) {
+void wlbasic(pointer_default)(struct wl_pointer_listener *listener) {
 	*listener = (struct wl_pointer_listener) {
 		.enter = wl_pointer_enter,
 		.leave = wl_pointer_leave,

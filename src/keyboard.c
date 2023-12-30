@@ -20,7 +20,7 @@ static void wl_keyboard_modifiers(void*, struct wl_keyboard*,
 static void wl_keyboard_repeat_info(void*, struct wl_keyboard*,
 	int32_t, int32_t) {}
 
-void wlbasic_keyboard_default(struct wl_keyboard_listener *listener) {
+void wlbasic(keyboard_default)(struct wl_keyboard_listener *listener) {
 	*listener = (struct wl_keyboard_listener) {
 		.keymap = wl_keyboard_keymap,
 		.enter = wl_keyboard_enter,

@@ -10,7 +10,7 @@ static void tablet_added(void* data,
 	struct zwp_tablet_seat_v2*,
 	struct zwp_tablet_v2 *id
 ) {
-	Wlbasic *wl = data;
+	Wlbasic() *wl = data;
 	wl->tablet = id;
 	zwp_tablet_v2_add_listener(id, &wl->conf.tablet_listener, wl);
 }
@@ -18,7 +18,7 @@ static void tool_added(void* data,
 	struct zwp_tablet_seat_v2*,
 	struct zwp_tablet_tool_v2* id
 ) {
-	Wlbasic *wl = data;
+	Wlbasic() *wl = data;
 	wl->tabtool = id;
 	zwp_tablet_tool_v2_add_listener(id, &wl->conf.tabtool_listener, wl);
 }
@@ -56,7 +56,7 @@ static void tabtool_button(void*, struct zwp_tablet_tool_v2*,
 static void tabtool_frame(void*,
 	struct zwp_tablet_tool_v2*, uint32_t) {}
 
-void wlbasic_tabtool_default(struct zwp_tablet_tool_v2_listener *listener) {
+void wlbasic(tabtool_default)(struct zwp_tablet_tool_v2_listener *listener) {
 	*listener = (struct zwp_tablet_tool_v2_listener) {
 		.type = tabtool_type,
 		.hardware_serial = tabtool_hardware_serial,
@@ -80,7 +80,7 @@ void wlbasic_tabtool_default(struct zwp_tablet_tool_v2_listener *listener) {
 	};
 }
 
-void wlbasic_tabseat_default(struct zwp_tablet_seat_v2_listener *listener) {
+void wlbasic(tabseat_default)(struct zwp_tablet_seat_v2_listener *listener) {
 	*listener = (struct zwp_tablet_seat_v2_listener) {
 		.tablet_added = tablet_added,
 		.tool_added = tool_added,
@@ -88,7 +88,7 @@ void wlbasic_tabseat_default(struct zwp_tablet_seat_v2_listener *listener) {
 	};
 }
 
-void wlbasic_tablet_default(struct zwp_tablet_v2_listener *listener) {
+void wlbasic(tablet_default)(struct zwp_tablet_v2_listener *listener) {
 	*listener = (struct zwp_tablet_v2_listener) {
 		.name = tablet_name,
 		.id = tablet_id,

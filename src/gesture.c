@@ -8,7 +8,7 @@ static void gepinch_update(void*, struct zwp_pointer_gesture_pinch_v1*,
 static void gepinch_end(void*, struct zwp_pointer_gesture_pinch_v1*,
 	uint32_t, uint32_t, int32_t) {}
 
-void wlbasic_gepinch_default(
+void wlbasic(gepinch_default)(
 	struct zwp_pointer_gesture_pinch_v1_listener *listener
 ) {
 	*listener = (struct zwp_pointer_gesture_pinch_v1_listener) {
